@@ -29,8 +29,8 @@ public class BotInfoController {
     @RequestMapping("/getDictionary")
     public Map<String, String> getDictionary() {
         Map<String, String> map = new HashMap<>();
-        map.put("WangBb", "666666");
-        map.put("Tiger", "520");
+        map.put("name", "wangbingbing");
+        map.put("rating", "520");
         return map;
     }
 }
