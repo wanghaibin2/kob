@@ -38,6 +38,7 @@ import { ref } from 'vue';
 <style>
   body {
     background-image: url("@/assets/logo.png");
-    background-size: cover;
+    /* 100%填充 */
+    background-size: cover;  
   }
 </style>
