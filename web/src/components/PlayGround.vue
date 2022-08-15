@@ -19,6 +19,5 @@ export default {
         width: 60vw;
         height: 70vh;
         margin: 45px auto;
-        background: lightblue;
     }
 </style>

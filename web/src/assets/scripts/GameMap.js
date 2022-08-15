@@ -1,4 +1,5 @@
 import { AcGameObject } from "./AcGameObject";
+import { Snack } from "./Snack";
 import { Wall } from "./Wall";
 
 export class GameMap extends AcGameObject {
@@ -10,10 +11,15 @@ export class GameMap extends AcGameObject {
         this.L = 0;
 
         this.rows = 13;
-        this.cols = 13;
+        this.cols = 14; // 两条蛇在同一时刻不在同一个格子
 
-        this.inner_walls_count = 10;
+        this.inner_walls_count = 16;
         this.walls = [];
+
+        this.snacks = [
+            new Snack({id:0, color: "#4875EC", r: this.rows - 2, c: 1}, this),
+            new Snack({id:1, color: "#F94848", r: 1, c: this.cols - 2}, this),
+        ];
     }
 
     check_connectivity(g, sx, sy, tx, ty) {
@@ -52,17 +58,17 @@ export class GameMap extends AcGameObject {
         }
 
         // 创建随机障碍物
-        for (let i = 0; i < this.inner_walls_count; i ++) {
+        for (let i = 0; i < this.inner_walls_count / 2; i ++) {
             for (let j = 0; j < 1000; j ++) {
                 let r = parseInt(Math.random() * this.rows);
                 let c = parseInt(Math.random() * this.cols);
-                if (g[r][c] || g[c][r]){
+                if (g[r][c] || g[this.rows - 1 - r][this.cols - 1 - c]){
                     continue;
                 } 
                 if (r == this.rows - 2 && c == 1 || r == 1 && c == this.cols - 2)  {
                     continue;
                 }
-                g[r][c] = g[c][r] = true;
+                g[r][c] = g[this.rows - 1 - r][this.cols - 1 - c] = true;
                 break;
             } 
         }
@@ -83,13 +89,47 @@ export class GameMap extends AcGameObject {
         return true;
     }
 
+    add_listening_events() {
+        this.ctx.canvas.focus();
+
+        const [snack0, snack1] = this.snacks;
+        console.log(snack1 + "11");
+        console.log(snack0 + "00");
+        this.ctx.canvas.addEventListener("keydown", e => {
+            if (e.key === 'w') { 
+                snack0.set_direction(0);
+            }
+            else if (e.key === 'd') {
+                snack0.set_direction(1);
+            }
+            else if (e.key == 's') {
+                snack0.set_direction(2);
+            }
+            else if (e.key === 'a') {
+                snack0.set_direction(3);
+            }
+            else if (e.key === 'ArrowUp') {
+                snack1.set_direction(0);
+            }
+            else if (e.key === 'ArrowRight') {
+                snack1.set_direction(1);
+            }
+            else if (e.key === 'ArrowDown') {
+                snack1.set_direction(2);
+            }
+            else if (e.key === 'ArrowLeft') {
+                snack1.set_direction(3);
+            }
+        });
+    }
+
     start() {
         for (let i = 0; i < 1000; i ++) {
             if (this.create_walls()) {
                 break;
             }
         }
-        
+        this.add_listening_events();
     }
 
     update_size() {
@@ -98,8 +138,30 @@ export class GameMap extends AcGameObject {
         this.ctx.canvas.height = this.L * this.rows;
     }
 
+    check_ready() {
+        // 判断两条蛇是否都准备好下一回合
+        for (const snack of this.snacks) {
+            if (snack.status !== "idle") {
+                return false;
+            }
+            if (snack.direction === -1) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    next_step() { // 进入下一回合
+        for (const snack of this.snacks) {
+            snack.next_step();
+        }
+    }
+
     update() {
         this.update_size();
+        if (this.check_ready()) {
+            this.next_step();
+        }
         this.render();
     }
 
