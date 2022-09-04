@@ -20,6 +20,7 @@ export class GameMap extends AcGameObject {
             new Snack({id:0, color: "#4875EC", r: this.rows - 2, c: 1}, this),
             new Snack({id:1, color: "#F94848", r: 1, c: this.cols - 2}, this),
         ];
+
     }
 
     check_connectivity(g, sx, sy, tx, ty) {
@@ -102,7 +103,7 @@ export class GameMap extends AcGameObject {
             else if (e.key === 'd') {
                 snack0.set_direction(1);
             }
-            else if (e.key == 's') {
+            else if (e.key === 's') {
                 snack0.set_direction(2);
             }
             else if (e.key === 'a') {
@@ -155,6 +156,28 @@ export class GameMap extends AcGameObject {
         for (const snack of this.snacks) {
             snack.next_step();
         }
+    }
+
+    check_valid(cell) {  // 检测目标位置是否合法
+        for (const wall of this.walls) {
+            if (wall.r === cell.r && wall.c === cell.c) {
+                return false;
+            }
+        }
+
+        for (const snack of this.snacks) {
+            let k = snack.cells.length;
+            if (!snack.check_tail_increasing()) {
+                k --;
+            }
+            for (let i = 0; i < k; i ++) {
+                if (snack.cells[i].r === cell.r && snack.cells[i].c === cell.c) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
     }
 
     update() {
