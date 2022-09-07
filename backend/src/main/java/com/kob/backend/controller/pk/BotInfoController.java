@@ -14,7 +14,7 @@ import java.util.Map;
  *
  */
 @RestController
-@RequestMapping("/Pk")
+@RequestMapping("/pk")
 public class BotInfoController {
 
     @RequestMapping("/getBotInfo")

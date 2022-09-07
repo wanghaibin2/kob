@@ -5,13 +5,10 @@ import com.kob.backend.mapper.UserMapper;
 import com.kob.backend.pojo.User;
 import com.kob.backend.service.impl.utils.UserDetailsImpl;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-
-import java.util.Collection;
 
 /**
  * @author :王冰冰
@@ -25,7 +22,7 @@ public class UserDetailServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        QueryWrapper queryWrapper = new QueryWrapper();
+        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("user_name", username);
         User user = userMapper.selectOne(queryWrapper);
         if (user == null) {
