@@ -29,11 +29,11 @@ public class RegisterServiceImpl implements RegisterService {
     @Override
     public Map<String, String> register(String username, String password, String confirmedPassword) {
         Map<String, String> map = new HashMap<>();
-        if (username == null) {
+        if (username == null || username.length() == 0) {
             map.put(errorMessage, usernameStr);
             return map;
         }
-        if (password == null || confirmedPassword == null) {
+        if (password == null || confirmedPassword == null || password.length() == 0 || confirmedPassword.length() == 0) {
             map.put(errorMessage, passwordStr);
             return map;
         }
