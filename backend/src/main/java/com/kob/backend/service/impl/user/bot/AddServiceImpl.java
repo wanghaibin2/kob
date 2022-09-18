@@ -31,7 +31,7 @@ public class AddServiceImpl implements AddService {
         User user = loginUser.getUser();
         String title = data.get("title");
         String description = data.get("description");
-        String content = data.get("context");
+        String content = data.get("content");
 
         Map<String, String> resultMap = new HashMap<>();
         if (title == null || title.length() == 0) {
@@ -62,6 +62,6 @@ public class AddServiceImpl implements AddService {
         Bot bot = new Bot(user.getId(), title, description, content);
         botMapper.insert(bot);
         resultMap.put("error_message", "success");
-        return null;
+        return resultMap;
     }
 }

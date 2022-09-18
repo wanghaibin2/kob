@@ -41,7 +41,7 @@ public class UpdateServiceImpl implements UpdateService {
         }
         String title = data.get("title");
         String description = data.get("description");
-        String content = data.get("context");
+        String content = data.get("content");
         if (title == null || title.length() == 0) {
             resultMap.put("error_message", "标题不能为空");
             return resultMap;

@@ -68,7 +68,7 @@ public class RegisterServiceImpl implements RegisterService {
         }
         // 密码加密
         String encodePassword = passwordEncoder.encode(password);
-        String photo = "https://www.acwing.com/user/profile/index/#";
+        String photo = "https://cdn.acwing.com/media/user/profile/photo/52953_lg_2c3ff42a05.jpg";
         User user = new User(null, username, encodePassword, photo);
         userMapper.insert(user);
         map.put(errorMessage, successStr);
