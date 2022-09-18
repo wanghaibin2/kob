@@ -4,7 +4,7 @@
                 <form @submit.prevent="register">
                     <div class="mb-3">
                         <label for="username" class="form-label">用户名</label>
-                        <input v-model="username" type="text" class="form-control" id="username" placeholder="请输入用户名">
+                        <input v-model="username" type="text" class="form-control" id="username" placeholder="请输入用户名" autocomplete="off">
                     </div>
                     <div class="mb-3">
                         <label for="password" class="form-label">密码</label>
