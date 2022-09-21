@@ -28,11 +28,6 @@ export class GameMap extends AcGameObject {
         const g = this.store.state.pk.gameMap;
         for (let r = 0; r < this.rows; r ++) {
             for (let c = 0; c < this.cols; c ++) {
-                console.log(r + " " + c);
-            }
-        }
-        for (let r = 0; r < this.rows; r ++) {
-            for (let c = 0; c < this.cols; c ++) {
                 if (g[r][c]) {
                     this.walls.push(new Wall(r, c, this));
                 }
@@ -42,32 +37,25 @@ export class GameMap extends AcGameObject {
 
     add_listening_events() {
         this.ctx.canvas.focus();
-
-        const [snack0, snack1] = this.snacks;
         this.ctx.canvas.addEventListener("keydown", e => {
+            let d = -1;
             if (e.key === 'w') { 
-                snack0.set_direction(0);
+                d = 0;
             }
             else if (e.key === 'd') {
-                snack0.set_direction(1);
+                d = 1;
             }
             else if (e.key === 's') {
-                snack0.set_direction(2);
+                d = 2;
             }
             else if (e.key === 'a') {
-                snack0.set_direction(3);
+                d = 3;
             }
-            else if (e.key === 'ArrowUp') {
-                snack1.set_direction(0);
-            }
-            else if (e.key === 'ArrowRight') {
-                snack1.set_direction(1);
-            }
-            else if (e.key === 'ArrowDown') {
-                snack1.set_direction(2);
-            }
-            else if (e.key === 'ArrowLeft') {
-                snack1.set_direction(3);
+            if (d >= 0) {
+                this.store.state.pk.socket.send(JSON.stringify({
+                    event: "move",
+                    direction: d,
+                }))
             }
         });
     }
