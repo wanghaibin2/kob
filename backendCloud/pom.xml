@@ -8,6 +8,7 @@
     <modules>
         <module>macthingSystem</module>
         <module>backend</module>
+        <module>botRunningSystem</module>
     </modules>
     <name>backendCloud</name>
     <description>backendCloud</description>

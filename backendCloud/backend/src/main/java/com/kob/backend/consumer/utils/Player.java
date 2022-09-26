@@ -20,6 +20,8 @@ public class Player {
     private Integer sx;
     private Integer sy;
     private List<Integer> steps;
+    private Integer botId;
+    private String botCode;
 
     public boolean check_tail_increasing(int step) {
         // 检测当前蛇尾的长度是否增加
