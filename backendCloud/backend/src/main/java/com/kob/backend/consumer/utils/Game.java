@@ -1,9 +1,12 @@
 package com.kob.backend.consumer.utils;
 
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.kob.backend.consumer.WebSocketServer;
 import com.kob.backend.pojo.Bot;
 import com.kob.backend.pojo.Record;
+import com.kob.backend.pojo.User;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
@@ -15,6 +18,11 @@ import java.util.concurrent.locks.ReentrantLock;
  * @date : 2022/9/18
  */
 public class Game extends Thread {
+
+    public static final String LOSER_A = "A";
+    public static final String LOSER_B = "B";
+    public static final String NONE_LOSER = "all";
+
     private final Integer rows;
     private final Integer cols;
     private final Integer innerWallsCount;
@@ -143,7 +151,7 @@ public class Game extends Thread {
     }
 
     private void sendBotCode(Player player) {
-        if (player.getId().equals(-1)) {
+        if (player.getBotId().equals(-1)) {
             return;
         }
         MultiValueMap<String, String> data = new LinkedMultiValueMap<>();
@@ -205,11 +213,11 @@ public class Game extends Thread {
         if (!validA || !validB) {
             status = "finished";
             if (!validA && !validB) {
-                loser = "all";
+                loser = NONE_LOSER;
             } else if (!validA) {
-                loser = "A";
+                loser = LOSER_A;
             } else {
-                loser = "B";
+                loser = LOSER_B;
             }
         }
     }
@@ -256,7 +264,24 @@ public class Game extends Thread {
         }
     }
 
+    private void updateUserRating(Player player, Integer rating) {
+        User user = WebSocketServer.userMapper.selectById(player.getId());
+        user.setRating(rating);
+        WebSocketServer.userMapper.updateById(user);
+    }
+
     private void savePkRecord() {
+        Integer ratingA = WebSocketServer.userMapper.selectById(playerA.getId()).getRating();
+        Integer ratingB = WebSocketServer.userMapper.selectById(playerB.getId()).getRating();
+        if (LOSER_A.equals(loser)) {
+            ratingA = ratingA - 2;
+            ratingB = ratingB + 5;
+        } else if(LOSER_B.equals(loser)) {
+            ratingA = ratingA + 5;
+            ratingB = ratingB - 2;
+        }
+        updateUserRating(playerA, ratingA);
+        updateUserRating(playerB, ratingB);
         Record record = new Record(null, playerA.getId(), playerA.getSx(), playerA.getSy(), playerB.getId(), playerB.getSx(), playerB.getSy(),
                 playerA.getStepsString(), playerB.getStepsString(), getMapString() , loser, new Date(), new Date());
         WebSocketServer.recordMapper.insert(record);
